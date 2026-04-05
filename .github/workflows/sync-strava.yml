@@ -1,0 +1,50 @@
+name: Sync Strava
+
+on:
+  schedule:
+    - cron: '15 * * * *'  # Every hour at :15
+  workflow_dispatch:       # Manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install requests
+
+      - name: Write .env from secrets
+        run: |
+          cat > sync/.env << EOF
+          STRAVA_CLIENT_ID=${{ secrets.STRAVA_CLIENT_ID }}
+          STRAVA_CLIENT_SECRET=${{ secrets.STRAVA_CLIENT_SECRET }}
+          STRAVA_ACCESS_TOKEN=${{ secrets.STRAVA_ACCESS_TOKEN }}
+          STRAVA_REFRESH_TOKEN=${{ secrets.STRAVA_REFRESH_TOKEN }}
+          STRAVA_TOKEN_EXPIRES=${{ secrets.STRAVA_TOKEN_EXPIRES }}
+          EOF
+
+      - name: Sync Strava
+        run: python3 sync/sync_strava.py
+
+      - name: Update token secrets if refreshed
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          # Read potentially refreshed tokens from .env
+          source <(grep -E '^STRAVA_(ACCESS_TOKEN|REFRESH_TOKEN|TOKEN_EXPIRES)=' sync/.env)
+          gh secret set STRAVA_ACCESS_TOKEN --body "$STRAVA_ACCESS_TOKEN"
+          gh secret set STRAVA_REFRESH_TOKEN --body "$STRAVA_REFRESH_TOKEN"
+          gh secret set STRAVA_TOKEN_EXPIRES --body "$STRAVA_TOKEN_EXPIRES"
+
+      - name: Commit updated data
+        run: |
+          git config user.name "Swim Coach Bot"
+          git config user.email "bot@swimcoach.local"
+          git add data/
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Sync Strava swim data"
+          git push

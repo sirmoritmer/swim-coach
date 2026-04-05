@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#000000">
+  <title>Trends · Swim Coach</title>
+  <link rel="manifest" href="pwa/manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Trends-specific styles */
+    .nav-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 4px;
+    }
+    .nav-back::before { content: '←'; }
+
+    /* Heatmap */
+    .heatmap-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .heatmap {
+      border-collapse: collapse;
+      font-size: 0.65rem;
+      min-width: 340px;
+      width: 100%;
+    }
+    .heatmap th {
+      color: var(--text-muted);
+      font-weight: 500;
+      padding: 4px 6px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .heatmap th.row-label {
+      text-align: right;
+      padding-right: 8px;
+      color: var(--text-dim);
+      font-size: 0.6rem;
+    }
+    .heatmap td {
+      width: 36px;
+      height: 28px;
+      border-radius: 4px;
+      text-align: center;
+      vertical-align: middle;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      cursor: default;
+      transition: opacity 0.15s;
+    }
+    .heatmap td:hover { opacity: 0.8; }
+    .heatmap td.empty { background: var(--bg-card); }
+
+    /* Pace band legend */
+    .pace-legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .pace-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .pace-legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+    }
+
+    /* Volume history chart taller */
+    .chart-container-tall {
+      position: relative;
+      height: 240px;
+      margin-top: 12px;
+    }
+
+    /* All-years table */
+    .years-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .years-table th {
+      text-align: left;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 6px 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .years-table td {
+      padding: 9px 6px 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+    }
+    .years-table tr:last-child td { border-bottom: none; }
+    .years-table .highlight { color: var(--accent); font-weight: 600; }
+    .years-table .best { color: var(--green); }
+    .yr-bar {
+      display: inline-block;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--accent);
+      vertical-align: middle;
+      margin-left: 6px;
+      opacity: 0.5;
+    }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+    .tab-bar a {
+      padding: 10px 16px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .tab-bar a.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <a class="nav-back" href="index.html">Dashboard</a>
+    <h1>Trends</h1>
+    <div class="subtitle">8+ years of swim data</div>
+  </header>
+
+  <!-- Volume History -->
+  <section class="section">
+    <div class="section-title">Weekly Volume &middot; 52 Weeks</div>
+    <div class="chart-container-tall">
+      <canvas id="volume-history-chart"></canvas>
+    </div>
+  </section>
+
+  <!-- Monthly Pace Trend -->
+  <section class="section">
+    <div class="section-title">Monthly Pace &middot; 3 Years</div>
+    <div class="chart-container-tall">
+      <canvas id="pace-trend-chart"></canvas>
+    </div>
+  </section>
+
+  <!-- Time-of-Day Heatmap -->
+  <section class="section">
+    <div class="section-title">When You Swim &middot; Hour &times; Day</div>
+    <div id="heatmap-container"><div class="loading">Loading</div></div>
+  </section>
+
+  <!-- All-Years Summary -->
+  <section class="section">
+    <div class="section-title">All Years</div>
+    <div id="years-summary"><div class="loading">Loading</div></div>
+  </section>
+
+  <!-- Pace by Distance Bucket -->
+  <section class="section">
+    <div class="section-title">Pace vs Session Length</div>
+    <div id="pace-by-distance"><div class="loading">Loading</div></div>
+  </section>
+
+  <footer style="padding:24px 16px 40px;text-align:center;font-size:0.7rem;color:var(--text-dim)">
+    <a href="index.html" style="color:var(--accent);text-decoration:none">← Back to Dashboard</a>
+  </footer>
+
+  <!-- Pre-bundled data (file:// compatible) -->
+  <script src="data/swims_data.js"></script>
+  <script src="data/health_data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/trends.js"></script>
+</body>
+</html>

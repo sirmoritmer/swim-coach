@@ -1,0 +1,468 @@
+/* Swim Coach — Dark theme, mobile-first */
+
+:root {
+  --bg: #000000;
+  --bg-card: #111111;
+  --bg-card-hover: #1a1a1a;
+  --border: #222222;
+  --text: #f5f5f5;
+  --text-muted: #888888;
+  --text-dim: #555555;
+  --accent: #00d4ff;
+  --accent-dim: rgba(0, 212, 255, 0.15);
+  --green: #34d399;
+  --green-dim: rgba(52, 211, 153, 0.15);
+  --orange: #fb923c;
+  --orange-dim: rgba(251, 146, 60, 0.15);
+  --red: #f87171;
+  --red-dim: rgba(248, 113, 113, 0.15);
+  --yellow: #fbbf24;
+  --radius: 12px;
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  --mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Header */
+.header {
+  padding: 20px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 100;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.header .subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Sections */
+.section {
+  padding: 24px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.card-row {
+  display: flex;
+  gap: 12px;
+}
+
+.card-row .card {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* Stat blocks */
+.stat {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-family: var(--mono);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.stat-value.accent { color: var(--accent); }
+.stat-value.green { color: var(--green); }
+.stat-value.orange { color: var(--orange); }
+.stat-value.red { color: var(--red); }
+
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+.stat-sub {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* Coach nudge */
+.nudge {
+  background: var(--accent-dim);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.nudge.good {
+  background: var(--green-dim);
+  border-left-color: var(--green);
+}
+
+.nudge.warning {
+  background: var(--orange-dim);
+  border-left-color: var(--orange);
+}
+
+.nudge.alert {
+  background: var(--red-dim);
+  border-left-color: var(--red);
+}
+
+.nudge-icon {
+  margin-right: 6px;
+}
+
+/* Analytical coach card */
+.coach-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.coach-block {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  border-left: 3px solid var(--border);
+}
+
+.coach-block:first-child {
+  border-left-color: var(--accent);
+}
+
+.coach-block:nth-child(2) {
+  border-left-color: var(--green);
+}
+
+.coach-block:nth-child(3) {
+  border-left-color: var(--text-dim);
+}
+
+/* Coach block section label */
+.coach-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 5px;
+}
+
+/* Inline color indicators */
+.ci-good  { color: var(--green);  font-weight: 600; }
+.ci-warn  { color: var(--orange); font-weight: 600; }
+.ci-neutral { color: var(--text-muted); }
+
+/* Progress bar (annual goal) */
+.progress-container {
+  margin-top: 12px;
+}
+
+.progress-bar-bg {
+  background: var(--border);
+  border-radius: 6px;
+  height: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  transition: width 0.8s ease;
+}
+
+.progress-bar-target {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  background: var(--yellow);
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.progress-pace {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+
+/* Streak */
+.streak-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.streak-card {
+  flex: 1;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+
+.streak-fire {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.streak-number {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: var(--mono);
+  line-height: 1.1;
+}
+
+.streak-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+/* Swim list */
+.swim-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.swim-item:last-child {
+  border-bottom: none;
+}
+
+.swim-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.swim-dot.open-water {
+  background: var(--green);
+}
+
+.swim-info {
+  flex: 1;
+}
+
+.swim-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.swim-stats {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.swim-pace {
+  font-size: 0.85rem;
+  font-family: var(--mono);
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* Year comparison table */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.comparison-table th {
+  text-align: left;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 8px 8px 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.comparison-table td {
+  padding: 10px 8px 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+
+.comparison-table tr:last-child td {
+  border-bottom: none;
+}
+
+.comparison-table .current-year {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Recovery tags */
+.recovery-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tag {
+  background: var(--bg-card);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+}
+
+.tag-value {
+  font-weight: 600;
+  font-family: var(--mono);
+}
+
+.tag.good .tag-value { color: var(--green); }
+.tag.neutral .tag-value { color: var(--text-muted); }
+.tag.bad .tag-value { color: var(--orange); }
+
+/* Chart container */
+.chart-container {
+  position: relative;
+  height: 200px;
+  margin-top: 12px;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+}
+
+/* Correlation cards */
+.correlation-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.correlation-label {
+  font-size: 0.85rem;
+}
+
+.correlation-effect {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Loading state */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--text-dim);
+}
+
+.loading::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Delta indicators */
+.delta {
+  font-size: 0.75rem;
+  font-family: var(--mono);
+}
+
+.delta.up { color: var(--green); }
+.delta.down { color: var(--red); }
+.delta.neutral { color: var(--text-dim); }
+
+/* Responsive — tablet+ */
+@media (min-width: 600px) {
+  body {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
+@media (min-width: 900px) {
+  body {
+    max-width: 560px;
+  }
+}

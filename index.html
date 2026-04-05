@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#000000">
+  <title>Swim Coach</title>
+  <link rel="manifest" href="pwa/manifest.json">
+  <link rel="apple-touch-icon" href="pwa/icon-192.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div style="display:flex;justify-content:space-between;align-items:baseline">
+      <h1>Swim Coach</h1>
+      <a href="trends.html" style="font-size:0.8rem;color:var(--accent);text-decoration:none">Trends →</a>
+    </div>
+    <div class="subtitle">8+ years of swim data</div>
+  </header>
+
+  <!-- Coach -->
+  <section class="section">
+    <div class="section-title">Coach</div>
+    <div id="nudge"><div class="loading">Loading</div></div>
+  </section>
+
+  <!-- Today's Readiness -->
+  <section class="section">
+    <div class="section-title">Recovery</div>
+    <div id="readiness"><div class="loading">Loading</div></div>
+  </section>
+
+  <!-- Last Swim -->
+  <section class="section">
+    <div class="section-title">Last Swim</div>
+    <div id="last-swim"><div class="loading">Loading</div></div>
+  </section>
+
+  <!-- Streaks -->
+  <section class="section">
+    <div class="section-title">Streaks</div>
+    <div id="streaks"><div class="loading">Loading</div></div>
+  </section>
+
+  <!-- Annual Goal -->
+  <section class="section">
+    <div class="section-title">2026 Goal &middot; 365,000 yards</div>
+    <div id="annual-goal"><div class="loading">Loading</div></div>
+  </section>
+
+  <!-- This Week -->
+  <section class="section">
+    <div class="section-title">This Week</div>
+    <div id="this-week"><div class="loading">Loading</div></div>
+  </section>
+
+  <!-- Recent Swims -->
+  <section class="section">
+    <div class="section-title">Recent Swims</div>
+    <div id="recent-swims"><div class="loading">Loading</div></div>
+  </section>
+
+  <!-- Year-over-Year -->
+  <section class="section">
+    <div class="section-title">Year over Year</div>
+    <div id="year-comparison"><div class="loading">Loading</div></div>
+  </section>
+
+  <!-- Pace Trend -->
+  <section class="section">
+    <div class="section-title">Pace Trend &middot; 24 Months</div>
+    <div class="chart-container">
+      <canvas id="pace-chart"></canvas>
+    </div>
+  </section>
+
+  <!-- Weekly Volume -->
+  <section class="section">
+    <div class="section-title">Weekly Volume &middot; 12 Weeks</div>
+    <div class="chart-container">
+      <canvas id="volume-chart"></canvas>
+    </div>
+  </section>
+
+  <!-- Recovery Correlations -->
+  <section class="section">
+    <div class="section-title">Recovery &times; Performance</div>
+    <div id="correlations"><div class="loading">Loading</div></div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="padding:24px 16px 40px;text-align:center;font-size:0.7rem;color:var(--text-dim)">
+    Data from Apple Health &middot; Last updated <span id="last-updated">--</span>
+  </footer>
+
+  <!-- Pre-bundled data (file:// compatible) -->
+  <script src="data/swims_data.js"></script>
+  <script src="data/health_data.js"></script>
+  <!-- Chart.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script>
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('pwa/sw.js').catch(() => {});
+    }
+  </script>
+  <script>
+    // Update last-updated timestamp from most recent swim
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Wait for dashboard to init
+      setTimeout(() => {
+        const swims = App.data.swims;
+        if (swims.length) {
+          const last = swims[swims.length - 1];
+          document.getElementById('last-updated').textContent = App.relativeDate(last.date);
+        }
+      }, 500);
+    });
+  </script>
+</body>
+</html>

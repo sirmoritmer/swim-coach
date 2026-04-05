@@ -1,0 +1,16 @@
+{
+  "note": "Yearly aggregate only \u2014 individual swims pending import",
+  "years": [
+    {
+      "year": 2016,
+      "distance_km": 21.83,
+      "type": "pool"
+    },
+    {
+      "year": 2017,
+      "distance_km": 158.74,
+      "type": "pool",
+      "note": "Apple Watch starts Dec 14, 2017 \u2014 last ~2.5 weeks overlap"
+    }
+  ]
+}

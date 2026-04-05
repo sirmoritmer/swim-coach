@@ -1,0 +1,4 @@
+sync/.env
+sync/strava-sync.log
+.claude/
+sync/__pycache__/

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swim Coach — Mockup</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    padding: 16px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #21262d;
+  }
+  .header h1 { font-size: 18px; font-weight: 600; color: #58a6ff; }
+  .header .date { font-size: 12px; color: #8b949e; }
+
+  /* Grid layout */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .grid-1 { margin-bottom: 12px; }
+
+  /* Card */
+  .card {
+    background: #161b22;
+    border: 1px solid #21262d;
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .card-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #8b949e;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .card-title {
+    font-size: 12px;
+    color: #8b949e;
+    margin-bottom: 12px;
+  }
+
+  /* Last swim */
+  .swim-main {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .swim-dist { font-size: 28px; font-weight: 700; color: #e6edf3; }
+  .swim-unit { font-size: 14px; color: #8b949e; }
+  .swim-meta { font-size: 12px; color: #8b949e; margin-bottom: 10px; }
+  .swim-meta span { margin-right: 12px; }
+
+  .pace-block { display: flex; align-items: baseline; gap: 6px; }
+  .pace-val { font-size: 22px; font-weight: 700; }
+  .pace-unit { font-size: 12px; color: #8b949e; }
+  .pace-delta { font-size: 12px; padding: 2px 8px; border-radius: 4px; margin-left: 6px; }
+  .delta-worse { background: rgba(248,81,73,0.12); color: #f85149; }
+  .delta-better { background: rgba(63,185,80,0.12); color: #3fb950; }
+
+  .divider { width: 1px; background: #21262d; margin: 0 6px; }
+
+  /* Stat blocks */
+  .stat-big { font-size: 32px; font-weight: 700; color: #e6edf3; line-height: 1; }
+  .stat-sub { font-size: 12px; color: #8b949e; margin-top: 4px; }
+  .stat-compare { font-size: 12px; color: #8b949e; margin-top: 8px; border-top: 1px solid #21262d; padding-top: 8px; }
+  .stat-compare .better { color: #3fb950; }
+  .stat-compare .worse { color: #f85149; }
+  .stat-compare .neutral { color: #8b949e; }
+
+  /* Streak highlight */
+  .streak-num { font-size: 48px; font-weight: 800; color: #58a6ff; line-height: 1; }
+  .streak-label { font-size: 12px; color: #8b949e; margin-top: 2px; }
+  .streak-since { font-size: 11px; color: #6e7681; margin-top: 8px; }
+
+  /* This week row */
+  .week-stats { display: flex; gap: 24px; margin-bottom: 10px; }
+  .week-stat { }
+  .week-stat .val { font-size: 20px; font-weight: 700; }
+  .week-stat .lbl { font-size: 11px; color: #8b949e; }
+
+  .vs-row { display: flex; gap: 12px; font-size: 12px; color: #8b949e; border-top: 1px solid #21262d; padding-top: 10px; margin-top: 10px; }
+  .vs-row .col { flex: 1; }
+  .vs-row .col-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #6e7681; margin-bottom: 3px; }
+  .vs-row .col-val { font-size: 14px; font-weight: 600; color: #e6edf3; }
+  .vs-row .col-delta { font-size: 11px; margin-top: 2px; }
+
+  /* Chart */
+  .chart-wrap { height: 180px; position: relative; }
+
+  /* Pool PRs */
+  .pool-section { margin-bottom: 14px; }
+  .pool-name { font-size: 12px; font-weight: 600; color: #58a6ff; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .pool-badge { font-size: 10px; background: #21262d; padding: 2px 6px; border-radius: 4px; color: #8b949e; }
+  .pr-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #21262d; }
+  .pr-row:last-child { border-bottom: none; }
+  .pr-rank { font-size: 11px; color: #6e7681; width: 20px; }
+  .pr-pace { font-size: 15px; font-weight: 700; color: #e6edf3; }
+  .pr-detail { font-size: 11px; color: #8b949e; text-align: right; }
+  .pr-gold { color: #d4a72c; }
+  .pr-silver { color: #8b949e; }
+  .pr-bronze { color: #a5693a; }
+
+  /* YTD comparison */
+  .ytd-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .ytd-metric { }
+  .ytd-metric .label { font-size: 11px; color: #6e7681; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .ytd-metric .val-2026 { font-size: 20px; font-weight: 700; color: #e6edf3; }
+  .ytd-metric .val-2025 { font-size: 12px; color: #8b949e; margin-top: 2px; }
+  .ytd-metric .delta { font-size: 11px; margin-top: 3px; }
+
+  /* Section divider */
+  .section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #6e7681;
+    margin: 20px 0 8px;
+    font-weight: 600;
+  }
+
+  /* Mockup note */
+  .mockup-banner {
+    background: rgba(210,153,34,0.1);
+    border: 1px solid rgba(210,153,34,0.3);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #d4a72c;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏊 Swim Coach</h1>
+  <span class="date">Mon Mar 30, 2026</span>
+</div>
+
+<div class="mockup-banner">MOCKUP — real data, placeholder charts. Approve layout before building.</div>
+
+<!-- ═══ LAST SWIM ═══ -->
+<div class="section-label">Last Swim</div>
+<div class="card grid-1" style="margin-bottom:12px">
+  <div style="display:flex; gap:24px; align-items:stretch; flex-wrap:wrap;">
+    <!-- Distance + meta -->
+    <div style="flex:1; min-width:160px;">
+      <div class="card-label">Mar 27, Friday · LA Fitness Yonkers · 23m pool</div>
+      <div class="swim-main">
+        <span class="swim-dist">2,743</span>
+        <span class="swim-unit">m</span>
+      </div>
+      <div class="swim-meta">
+        <span>60 min</span>
+        <span>120 laps</span>
+        <span>931 cal</span>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <!-- Pace -->
+    <div style="flex:1; min-width:140px;">
+      <div class="card-label">Avg Pace</div>
+      <div class="pace-block">
+        <span class="pace-val">2:11</span>
+        <span class="pace-unit">/100m</span>
+        <span class="pace-delta delta-worse">+0:04 vs 4w avg</span>
+      </div>
+      <div class="stat-sub" style="margin-top:6px;">4-week avg: 2:07/100m (16 swims)</div>
+    </div>
+    <div class="divider"></div>
+    <!-- HR if available -->
+    <div style="flex:1; min-width:120px;">
+      <div class="card-label">Heart Rate</div>
+      <div class="pace-block">
+        <span class="pace-val" style="font-size:22px;">99</span>
+        <span class="pace-unit">bpm avg</span>
+      </div>
+      <div class="stat-sub" style="margin-top:6px;">Max: 143 bpm</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ THIS WEEK + STREAK ═══ -->
+<div class="section-label">This Week · Consistency</div>
+<div class="grid-2" style="margin-bottom:12px;">
+
+  <!-- This week -->
+  <div class="card">
+    <div class="card-label">Week 13</div>
+    <div class="week-stats">
+      <div class="week-stat">
+        <div class="val">3</div>
+        <div class="lbl">swims</div>
+      </div>
+      <div class="week-stat">
+        <div class="val">8.2 <span style="font-size:13px;font-weight:400;color:#8b949e">km</span></div>
+        <div class="lbl">distance</div>
+      </div>
+      <div class="week-stat">
+        <div class="val" style="font-size:17px;">2:10</div>
+        <div class="lbl">avg pace</div>
+      </div>
+    </div>
+    <div class="vs-row">
+      <div class="col">
+        <div class="col-label">Last week</div>
+        <div class="col-val">8.5 km</div>
+        <div class="col-delta worse">−0.3 km</div>
+      </div>
+      <div class="col">
+        <div class="col-label">Last week pace</div>
+        <div class="col-val">2:03</div>
+        <div class="col-delta worse">+0:07 slower</div>
+      </div>
+      <div class="col">
+        <div class="col-label">4-week avg</div>
+        <div class="col-val">2:07</div>
+        <div class="col-delta worse">+0:03 slower</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Streak -->
+  <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
+    <div class="card-label">Consistency Streak</div>
+    <div class="streak-num">16</div>
+    <div class="streak-label">consecutive weeks swimming</div>
+    <div class="streak-since">Since Dec 9, 2025 · keep going</div>
+  </div>
+
+</div>
+
+<!-- ═══ YTD vs 2025 ═══ -->
+<div class="section-label">2026 Season · vs Same Period 2025</div>
+<div class="card grid-1" style="margin-bottom:12px;">
+  <div class="ytd-grid">
+    <div class="ytd-metric">
+      <div class="label">Distance YTD</div>
+      <div class="val-2026">107 km</div>
+      <div class="val-2025">2025: 71.9 km</div>
+      <div class="delta better">+49% more volume</div>
+    </div>
+    <div class="ytd-metric">
+      <div class="label">Swims YTD</div>
+      <div class="val-2026">44</div>
+      <div class="val-2025">2025: 35</div>
+      <div class="delta better">+26% more sessions</div>
+    </div>
+    <div class="ytd-metric">
+      <div class="label">Avg Pace</div>
+      <div class="val-2026">2:09</div>
+      <div class="val-2025">2025: 2:16</div>
+      <div class="delta better">7 sec/100m faster</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MONTHLY CHARTS ═══ -->
+<div class="section-label">Monthly Volume &amp; Pace — Last 15 Months</div>
+<div class="card grid-1" style="margin-bottom:12px;">
+  <div class="chart-wrap">
+    <canvas id="monthlyChart"></canvas>
+  </div>
+</div>
+
+<!-- ═══ POOL PRs ═══ -->
+<div class="section-label">Pool Records (≥1,500m)</div>
+<div class="grid-2" style="margin-bottom:12px;">
+
+  <!-- LA Fitness Yonkers 23m -->
+  <div class="card">
+    <div class="pool-name">
+      LA Fitness Yonkers
+      <span class="pool-badge">23m pool · 1,491 swims</span>
+    </div>
+    <div class="pr-row">
+      <span class="pr-rank pr-gold">🥇</span>
+      <span class="pr-pace">1:47.0</span>
+      <span class="pr-detail">2,652m · Oct 2025 · 47min</span>
+    </div>
+    <div class="pr-row">
+      <span class="pr-rank pr-silver">🥈</span>
+      <span class="pr-pace">1:47.4</span>
+      <span class="pr-detail">1,943m · Jun 2025 · 35min</span>
+    </div>
+    <div class="pr-row">
+      <span class="pr-rank pr-bronze">🥉</span>
+      <span class="pr-pace">1:48.8</span>
+      <span class="pr-detail">1,600m · Sep 2021 · 29min</span>
+    </div>
+    <div class="pr-row">
+      <span class="pr-rank" style="color:#6e7681">4</span>
+      <span class="pr-pace">1:49.7</span>
+      <span class="pr-detail">1,829m · May 2024 · 33min</span>
+    </div>
+    <div class="pr-row">
+      <span class="pr-rank" style="color:#6e7681">5</span>
+      <span class="pr-pace">1:50.0</span>
+      <span class="pr-detail">1,600m · Jun 2022 · 29min</span>
+    </div>
+  </div>
+
+  <!-- NYSC Dobbs Ferry 25m -->
+  <div class="card">
+    <div class="pool-name">
+      NYSC Dobbs Ferry
+      <span class="pool-badge">25m pool · 126 swims</span>
+    </div>
+    <div class="pr-row">
+      <span class="pr-rank pr-gold">🥇</span>
+      <span class="pr-pace">1:48.2</span>
+      <span class="pr-detail">3,200m · Feb 27, 2026 · 58min</span>
+    </div>
+    <div class="pr-row">
+      <span class="pr-rank pr-silver">🥈</span>
+      <span class="pr-pace">1:48.8</span>
+      <span class="pr-detail">2,903m · Mar 6, 2026 · 53min</span>
+    </div>
+    <div class="pr-row">
+      <span class="pr-rank pr-bronze">🥉</span>
+      <span class="pr-pace">1:52.2</span>
+      <span class="pr-detail">2,492m · Feb 26, 2026 · 47min</span>
+    </div>
+    <div class="pr-row">
+      <span class="pr-rank" style="color:#6e7681">4</span>
+      <span class="pr-pace">1:52.7</span>
+      <span class="pr-detail">3,901m · Nov 2023 · 73min</span>
+    </div>
+    <div class="pr-row">
+      <span class="pr-rank" style="color:#6e7681">5</span>
+      <span class="pr-pace">1:59.1</span>
+      <span class="pr-detail">1,500m · Sep 2019 · 30min</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Monthly chart - real data
+const months = ['Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26'];
+const distances = [24.7, 25.7, 27.2, 19.4, 32.0, 29.1, 27.4, 23.1, 23.7, 36.2, 34.0, 33.4, 43.3, 30.5, 33.2];
+// Pace as seconds for chart (exclude Jul 25 outlier - open water skew, show as null)
+const paces = [2.104, 2.201, 2.473, 2.532, 2.075, 2.100, null, 2.556, 2.143, 2.063, 2.083, 2.098, 2.054, 2.262, 2.149];
+
+function paceToStr(p) {
+  if (!p) return '—';
+  const m = Math.floor(p);
+  const s = Math.round((p - m) * 60);
+  return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+const ctx = document.getElementById('monthlyChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'Distance (km)',
+        data: distances,
+        backgroundColor: months.map((m,i) => i >= 12 ? 'rgba(88,166,255,0.7)' : 'rgba(88,166,255,0.3)'),
+        borderColor: months.map((m,i) => i >= 12 ? '#58a6ff' : 'rgba(88,166,255,0.5)'),
+        borderWidth: 1,
+        yAxisID: 'y',
+        order: 2,
+      },
+      {
+        label: 'Avg Pace (min/100m)',
+        data: paces,
+        type: 'line',
+        borderColor: '#3fb950',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        pointRadius: 3,
+        pointBackgroundColor: '#3fb950',
+        tension: 0.3,
+        yAxisID: 'y2',
+        order: 1,
+        spanGaps: false,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: {
+        labels: { color: '#8b949e', boxWidth: 12, font: { size: 11 } }
+      },
+      tooltip: {
+        backgroundColor: '#1c2128',
+        borderColor: '#30363d',
+        borderWidth: 1,
+        callbacks: {
+          label: (ctx) => {
+            if (ctx.datasetIndex === 0) return ` ${ctx.parsed.y} km`;
+            if (ctx.parsed.y === null) return ' Pace: — (OW skew)';
+            return ` Pace: ${paceToStr(ctx.parsed.y)}/100m`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color: '#6e7681', font: { size: 10 } },
+        grid: { color: '#21262d' }
+      },
+      y: {
+        position: 'left',
+        title: { display: true, text: 'km', color: '#6e7681', font: { size: 10 } },
+        ticks: { color: '#6e7681', font: { size: 10 } },
+        grid: { color: '#21262d' }
+      },
+      y2: {
+        position: 'right',
+        reverse: true, // lower pace = better = higher on chart
+        min: 1.9,
+        max: 2.7,
+        title: { display: true, text: 'min/100m', color: '#6e7681', font: { size: 10 } },
+        ticks: {
+          color: '#6e7681',
+          font: { size: 10 },
+          callback: (v) => paceToStr(v)
+        },
+        grid: { display: false }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
