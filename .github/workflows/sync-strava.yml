@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
 
       - uses: actions/setup-python@v5
         with:
@@ -19,13 +21,14 @@ jobs:
 
       - name: Write .env from secrets
         run: |
-          cat > sync/.env << EOF
+          cat > sync/.env <<EOF
           STRAVA_CLIENT_ID=${{ secrets.STRAVA_CLIENT_ID }}
           STRAVA_CLIENT_SECRET=${{ secrets.STRAVA_CLIENT_SECRET }}
           STRAVA_ACCESS_TOKEN=${{ secrets.STRAVA_ACCESS_TOKEN }}
           STRAVA_REFRESH_TOKEN=${{ secrets.STRAVA_REFRESH_TOKEN }}
           STRAVA_TOKEN_EXPIRES=${{ secrets.STRAVA_TOKEN_EXPIRES }}
           EOF
+          sed -i 's/^          //' sync/.env
 
       - name: Sync Strava
         run: python3 sync/sync_strava.py
@@ -34,7 +37,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          # Read potentially refreshed tokens from .env
           source <(grep -E '^STRAVA_(ACCESS_TOKEN|REFRESH_TOKEN|TOKEN_EXPIRES)=' sync/.env)
           gh secret set STRAVA_ACCESS_TOKEN --body "$STRAVA_ACCESS_TOKEN"
           gh secret set STRAVA_REFRESH_TOKEN --body "$STRAVA_REFRESH_TOKEN"
