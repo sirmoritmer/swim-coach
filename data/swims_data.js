@@ -42933,6 +42933,29 @@ window.__SWIMS = [
     "max_hr": 148.0
   },
   {
+    "id": "strava_18014401987",
+    "source": "strava",
+    "device": "Strava",
+    "date": "2026-04-04",
+    "datetime": "2026-04-04T16:40:35",
+    "year": 2026,
+    "month": 4,
+    "week": 14,
+    "hour": 16,
+    "weekday": "Saturday",
+    "weekday_num": 5,
+    "distance_m": 2811.8,
+    "duration_min": 72.05,
+    "pace_per_100m": 2.562,
+    "laps": null,
+    "pool_length_m": null,
+    "is_open_water": true,
+    "calories": 0,
+    "strava_id": "18014401987",
+    "avg_hr": 123.6,
+    "max_hr": 140.0
+  },
+  {
     "id": "strava_17980428765",
     "source": "strava",
     "device": "Strava",
@@ -42952,5 +42975,28 @@ window.__SWIMS = [
     "is_open_water": true,
     "calories": 0,
     "strava_id": "17980428765"
+  },
+  {
+    "id": "strava_18014402143",
+    "source": "strava",
+    "device": "Strava",
+    "date": "2026-04-07",
+    "datetime": "2026-04-07T08:19:56",
+    "year": 2026,
+    "month": 4,
+    "week": 15,
+    "hour": 8,
+    "weekday": "Tuesday",
+    "weekday_num": 1,
+    "distance_m": 2788.9,
+    "duration_min": 71.72,
+    "pace_per_100m": 2.572,
+    "laps": null,
+    "pool_length_m": null,
+    "is_open_water": true,
+    "calories": 0,
+    "strava_id": "18014402143",
+    "avg_hr": 117.6,
+    "max_hr": 140.0
   }
 ];
