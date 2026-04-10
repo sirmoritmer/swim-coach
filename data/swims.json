@@ -42998,5 +42998,26 @@
     "strava_id": "18014402143",
     "avg_hr": 117.6,
     "max_hr": 140.0
+  },
+  {
+    "id": "strava_18052839176",
+    "source": "strava",
+    "device": "Strava",
+    "date": "2026-04-10",
+    "datetime": "2026-04-10T07:13:01",
+    "year": 2026,
+    "month": 4,
+    "week": 15,
+    "hour": 7,
+    "weekday": "Friday",
+    "weekday_num": 4,
+    "distance_m": 2400.3,
+    "duration_min": 53.02,
+    "pace_per_100m": 2.209,
+    "laps": null,
+    "pool_length_m": null,
+    "is_open_water": true,
+    "calories": 0,
+    "strava_id": "18052839176"
   }
 ]
